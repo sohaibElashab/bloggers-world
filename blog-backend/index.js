@@ -13,7 +13,7 @@ app.use(function (req, res, next) {
 });
 app.use(
   cors({
-    origin: "http://localhost:8080",
+    origin: "*",
   })
 );
 const port = 3000;
@@ -28,6 +28,7 @@ const {
   getDownloadURL,
 } = require("firebase/storage");
 const { initializeApp } = require("firebase/app");
+const path = require("path");
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSgnCQ-HEOJ80YlyQte53KFgsGmlpXtcY",
@@ -91,13 +92,18 @@ const db = initializeApp(firebaseConfig);
           "uploads/" + path,
           ffmpeg.FS("readFile", "new_" + path)
         );
-        const storageRef = ref(storage, "sohaib/" + path);
+        const storageRef = ref(storage, "blogs/" + path);
         await uploadBytes(storageRef, fs.readFileSync("uploads/" + path)).then(
           async (snapshot) => {
             url = await getDownloadURL(snapshot.ref);
             videosURLS.push(url);
           }
         );
+      }
+      const directory = "uploads";
+
+      for (const file of fs.readdirSync(directory)) {
+        fs.unlinkSync(path.join(directory, file));
       }
       res.json(videosURLS);
     });
