@@ -35,8 +35,8 @@
             >
           </div>
 
-          <RegisterStep1 @Next="Next" v-if="step == 1" />
-          <RegisterStep2 @SignUP="SignUP" v-if="step == 2" />
+          <RegisterStep1 :email="user.email" @Next="Next" v-if="step == 1" />
+          <RegisterStep2 @SignUP="SignUP" @back="back" v-if="step == 2" />
           <div class="text-center mt-5">
             <router-link class="no-underline text-color" to="/login"
               >I already have an account</router-link
@@ -78,6 +78,9 @@ export default {
       user.value.password = data.password;
       step.value = 2;
     };
+    const back = () => {
+      step.value = 1;
+    };
 
     const SignUP = async (data) => {
       waiting.value = true;
@@ -93,7 +96,7 @@ export default {
       }
     };
 
-    return { SignUP, user, step, error, Next , waiting };
+    return { SignUP, user, step, error, Next , waiting , back };
   },
   components: {
     RegisterStep1,

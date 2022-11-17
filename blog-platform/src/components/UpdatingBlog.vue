@@ -66,6 +66,7 @@
 import { ref } from "@vue/reactivity";
 import { computed, onMounted } from "@vue/runtime-core";
 import {
+  deleteObject,
   getDownloadURL,
   getStorage,
   ref as rof,
@@ -78,11 +79,15 @@ export default {
     const blog = ref(props.blog.value);
     const Videos = ref([]);
     const BlogVideos = ref([]);
+    const oldBlogVideos = ref([]);
     const storage = getStorage();
     const error = ref(false);
     const waiting = ref(false);
 
     const removeVideos = (index) => {
+      if (!BlogVideos.value.at(index).startsWith("blob")) {
+        oldBlogVideos.value.push(BlogVideos.value.at(index));
+      }
       BlogVideos.value.splice(index, 1);
       Videos.value.splice(index, 1);
     };
@@ -94,6 +99,7 @@ export default {
         Videos.value.push(files[index]);
       });
     };
+
     const update = async () => {
       waiting.value = true;
       let videosURLS = [];
@@ -112,6 +118,19 @@ export default {
           }
         );
       }
+      for (let index = 0; index < oldBlogVideos.value.length; index++) {
+        var url = oldBlogVideos.value[index].match(/blogs%2[Ff](.*)\?/i)[1];
+        const desertRef = rof(storage, "blogs/" + url);
+        deleteObject(desertRef)
+          .then(() => {
+            console.log("====================================");
+            console.log("good");
+            console.log("====================================");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
       blog.value.videos = videosURLS;
       error.value = false;
       if (blog.value.videos.length > 0) {
@@ -122,12 +141,14 @@ export default {
       waiting.value = false;
     };
     onMounted(() => {
+      // oldBlogVideos.value = props.blog.value.videos
       BlogVideos.value = props.blog.value.videos;
     });
     return {
       blog,
       Videos,
       BlogVideos,
+      oldBlogVideos,
       removeVideos,
       addVideos,
       update,

@@ -146,7 +146,8 @@ export default {
       }
     };
     const formateTime = (value) => {
-      return moment(value.toDate()).format("MMMM Do YYYY, H:mm:ss");
+      // return moment(value.seconds.toDate()).format("MMMM Do YYYY, H:mm:ss");
+      return moment(value.seconds * 1000).format("MMMM Do YYYY, H:mm:ss");
     };
     return {
       blogs: computed(() => store.state.blogs),

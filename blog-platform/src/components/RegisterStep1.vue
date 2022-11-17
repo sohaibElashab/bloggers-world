@@ -38,10 +38,11 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref } from "vue";
 export default {
-  setup(props,{emit}) {
-    const email = ref("");
+  props: ["email"],
+  setup(props, { emit }) {
+    const email = ref(props.email);
     const password = ref("");
     const ErrorEmail = ref(false);
     const ErrorPassword = ref(false);

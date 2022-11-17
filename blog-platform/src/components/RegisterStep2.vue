@@ -69,6 +69,13 @@
       label="Sign up"
       class="w-full mt-4 p-3 text-xl"
     ></Button>
+    
+    <Button
+      @click="back"
+      label="Back"
+      class="p-button-danger p-button-text w-full mt-3"
+    ></Button>
+
   </div>
 </template>
 
@@ -119,6 +126,9 @@ export default {
         phone: phone.value,
       });
     };
+    const back = () => {
+      emit("back");
+    }
     return {
       name,
       phone,
@@ -129,6 +139,7 @@ export default {
       ErrorProfile,
       SignUP,
       addImages,
+      back
     };
   },
 };
